@@ -35,7 +35,7 @@ It would also be awesome to try qwen-coder locally as I predict it could perform
 ### Day2
 On Day1 I was being speculative and only providing Part 2 to the LLM to solve Part 2.
 This didn't work for Day 2 as it needed the context from Part 1 too.
-As a quick workaround I just send the full context of the description (including Part 1) to the LLM for Part 2, but the better solution would be to store the previous message i.e Part 1 in memory.
+As a quick workaround I just send the full context of the description (including Part 1) to the LLM for Part 2, but the better solution would be to store the previous message i.e Part 1 in chat history.
 
 Billing - 16cents! - OK I had to dig more, so I'm using gpt-4 which is now an older model and you get charged at a higher rate: input/ouput: gpt-4 $30.00 / 1M tokens $60.00 / 1M tokens.
 
