@@ -13,7 +13,7 @@ class AoCLLMSolver:
     def __init__(self, day: int, part: int):
         self.day = day
         self.part = part
-        self.llm = ChatOpenAI(model="gpt-4")
+        self.llm = ChatOpenAI(model="gpt-4o")
         self.output_parser = StrOutputParser()
 
     def read_puzzle_description(self) -> str:
@@ -42,9 +42,12 @@ class AoCLLMSolver:
 
     def generate_solution(self) -> str:
         """Generate a Python solution using the LLM."""
+        print("reading puzzle description")
         description = self.read_puzzle_description()
+        print("reading puzzle input")
         sample_input = self.read_puzzle_input()
 
+        print("creating prompt")
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are an expert Python programmer helping to solve Advent of Code puzzles.
             Generate a complete Python solution for the given puzzle description.
@@ -61,12 +64,15 @@ class AoCLLMSolver:
             {description}
 
             Here is a sample of the input format:
-            {sample_input[:500]}  # Only show first 500 chars of input as example
+            {sample_input[:200]}  # Only show first 200 chars of input as example
+            
+            You are currently solving Part {self.part}.
 
             Please generate a Python solution to solve this puzzle.""")
         ])
 
         chain = prompt | self.llm | self.output_parser
+        print("generating solution")
         return chain.invoke({})
 
 
@@ -93,4 +99,4 @@ def main(day: int, part: int):
 
 
 if __name__ == "__main__":
-    main(1, 2)
+    main(2, 2)
