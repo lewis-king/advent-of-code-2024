@@ -14,7 +14,7 @@ class AoCLLMSolver:
     def __init__(self, day: int, part: int):
         self.day = day
         self.part = part
-        self.llm = ChatOpenAI(model="gpt-4")
+        self.llm = ChatOpenAI(model="gpt-4o")
         self.output_parser = StrOutputParser()
         self.chat_history = []  # Store the conversation history
 
