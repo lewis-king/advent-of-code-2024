@@ -55,9 +55,12 @@ Had to escape the curley braces which was messing with the prompt creation, but 
 
 Part 2 - OK the LLM took a couple of iterations this time, I updated the solver to store the history of what we tried and made it interactive, so I could tell it the wrong answer it was giving. Based on a wrong answer the LLM would then try a new solution given the feedback. It looks something like this:
 ```
-I apologize for the confusion earlier. Here is the revised Python solution that handles both the "mul" operation and the "do" and "don't" instructions correctly.
+Human: No it gave 328 which was incorrect
+System: Here is an improved Python solution
+System: The previous solution attempted to match the 'do()' and 'don't()' instructions from the current position in the string, which would not find instructions that began before the current position. The improved solution uses the re.search() method to find the most recent 'do()' or 'don't()' instruction in the string up to the current position. Also, after matching a 'mul()' instruction, it skips the characters that are part of the matched instruction to avoid matching the same instruction multiple times.
+Human: hmm this still got the same wrong answer 328
+System: I apologize for the confusion earlier. Here is the revised Python solution that handles both the "mul" operation and the "do" and "don't" instructions correctly.
+System: This program reads the corrupted memory and processes the instructions in the order they appear. It keeps track of whether the 'mul' instructions are enabled or not based on the most recent 'do' or 'don't' instruction. When it encounters a 'mul' instruction and if 'mul' is enabled, it multiplies the two numbers and adds the result to a running total. It repeats this process until it has processed all the instructions in the corrupted memory.
 ```
 
-```
-This program reads the corrupted memory and processes the instructions in the order they appear. It keeps track of whether the 'mul' instructions are enabled or not based on the most recent 'do' or 'don't' instruction. When it encounters a 'mul' instruction and if 'mul' is enabled, it multiplies the two numbers and adds the result to a running total. It repeats this process until it has processed all the instructions in the corrupted memory.
-```
+After 2 failed attempts it was able to produce the correct solution. - I've also started storing all solution attempts to see how the LLM evolved its solution
