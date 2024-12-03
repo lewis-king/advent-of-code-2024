@@ -48,6 +48,7 @@ class AoCLLMSolver:
         sample_input = self.read_puzzle_input()
 
         print("creating prompt")
+        escaped_sample_input = sample_input[:200].replace("{", "{{").replace("}", "}}")
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are an expert Python programmer helping to solve Advent of Code puzzles.
             Generate a complete Python solution for the given puzzle description.
@@ -64,7 +65,7 @@ class AoCLLMSolver:
             {description}
 
             Here is a sample of the input format:
-            {sample_input[:200]}  # Only show first 200 chars of input as example
+            {escaped_sample_input}  # Only show first 200 chars of input as example
             
             You are currently solving Part {self.part}.
 
@@ -99,4 +100,4 @@ def main(day: int, part: int):
 
 
 if __name__ == "__main__":
-    main(2, 2)
+    main(3, 1)

@@ -49,3 +49,6 @@ gpt-4o-mini
 $0.150 / 1M input tokens
 $0.075 / 1M input tokens
 $0.075 / 1M cached** input tokens
+
+### Day3
+Had to escape the curley braces which was messing with the prompt creation, but apart from that, within roughly 3 secs gpt-4o produced another working solution first time
