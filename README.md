@@ -53,7 +53,7 @@ $0.075 / 1M cached** input tokens
 ### Day3
 Had to escape the curley braces which was messing with the prompt creation, but apart from that, within roughly 3 secs gpt-4o produced another working solution first time
 
-Part 2 - OK the LLM took a couple of iterations this time, I updated the solver to store the history of what we tried and made it interactive, so I could tell it the wrong answer it was giving. Based on a wrong answer the LLM would then try a new solution given the feedback. It looks something like this:
+Part 2 - OK the LLM took a couple of iterations this time (I later realised I accidently reverted back to using the more expensive/not as good gpt-4 so this could explain why it required more work!), I updated the solver to store the history of what we tried and made it interactive, so I could tell it the wrong answer it was giving. Based on a wrong answer the LLM would then try a new solution given the feedback. It looks something like this:
 ```
 Human: No it gave 328 which was incorrect
 System: Here is an improved Python solution
@@ -64,3 +64,8 @@ System: This program reads the corrupted memory and processes the instructions i
 ```
 
 After 2 failed attempts it was able to produce the correct solution. - I've also started storing all solution attempts to see how the LLM evolved its solution
+
+accidently used 2 models (4o for part1 and 4 for part 2):
+gpt4 - 22cents
+gpt4o - 1cents!
+As you can see the gulf in pricing diff. So we'll make sure 4o is being used or smaller similar ability models from now on.
