@@ -52,3 +52,12 @@ $0.075 / 1M cached** input tokens
 
 ### Day3
 Had to escape the curley braces which was messing with the prompt creation, but apart from that, within roughly 3 secs gpt-4o produced another working solution first time
+
+Part 2 - OK the LLM took a couple of iterations this time, I updated the solver to store the history of what we tried and made it interactive, so I could tell it the wrong answer it was giving. Based on a wrong answer the LLM would then try a new solution given the feedback. It looks something like this:
+```
+I apologize for the confusion earlier. Here is the revised Python solution that handles both the "mul" operation and the "do" and "don't" instructions correctly.
+```
+
+```
+This program reads the corrupted memory and processes the instructions in the order they appear. It keeps track of whether the 'mul' instructions are enabled or not based on the most recent 'do' or 'don't' instruction. When it encounters a 'mul' instruction and if 'mul' is enabled, it multiplies the two numbers and adds the result to a running total. It repeats this process until it has processed all the instructions in the corrupted memory.
+```
