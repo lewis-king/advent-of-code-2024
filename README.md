@@ -65,7 +65,29 @@ System: This program reads the corrupted memory and processes the instructions i
 
 After 2 failed attempts it was able to produce the correct solution. - I've also started storing all solution attempts to see how the LLM evolved its solution
 
-accidently used 2 models (4o for part1 and 4 for part 2):
+accidentally used 2 models (4o for part1 and 4 for part 2):
 gpt4 - 22cents
 gpt4o - 1cents!
 As you can see the gulf in pricing diff. So we'll make sure 4o is being used or smaller similar ability models from now on.
+
+
+### Day4
+Part 1 - solved first time with gpt-4o
+
+Part 2 - This was causing all sorts of problems for the LLM! gpt4o kept coming up with the same couple of answers after 7 attempts!
+So I switched to Claude-3.5-sonnet to see how it would fare, and it came up with different answers but was still failing after a few attempts.
+This one may require some actual human understanding to further guide the LLM! Stay tuned...
+
+Total cost incurred so far:
+gpt-4o = $0.09
+claude-3.5-sonnet = $0.25
+
+So even though I'm making way more attempts, at least I'm using cheaper models now.
+
+The LLM struggled a huge deal with part 2.
+I need to improve the debug verbosity so that I can get a clearer understanding off the full context going to the LLM.
+But I wasn't having much luck with prompt engineering here.
+I ended up implementing the solution myself (see human_takeover file). The LLM wasn't getting to any kind of nice solution here and struggled completely.
+
+I would have expected some prompt engineering to coerce it to a solution here, so that's why I made the note about improving debug verbosity as I'm not sure if the solver is not doing exactly as I expect.
+One to look into!

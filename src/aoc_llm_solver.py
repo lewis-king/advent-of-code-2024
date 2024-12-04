@@ -1,7 +1,10 @@
 import os
 from pathlib import Path
+from enum import Enum
+from typing import Literal
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.messages import HumanMessage, AIMessage
@@ -10,18 +13,53 @@ from langchain_core.messages import HumanMessage, AIMessage
 load_dotenv()
 
 
+class ModelProvider(str, Enum):
+    OPENAI = "openai"
+    ANTHROPIC = "anthropic"
+
+
 class AoCLLMSolver:
-    def __init__(self, day: int, part: int):
+    def __init__(self,
+                 day: int,
+                 part: int,
+                 provider: ModelProvider = ModelProvider.OPENAI,
+                 model_name: str = "gpt-4"):
+        """
+        Initialize the solver with specified model configuration.
+
+        Args:
+            day: Day number of the puzzle
+            part: Part number of the puzzle (1 or 2)
+            provider: The model provider to use (openai or anthropic)
+            model_name: The specific model to use
+                For OpenAI: "gpt-4", "gpt-4-turbo-preview", etc.
+                For Anthropic: "claude-3-opus-20240229", "claude-3-sonnet-20240229", etc.
+        """
         self.day = day
         self.part = part
-        self.llm = ChatOpenAI(model="gpt-4o")
+        self.provider = provider
+        self.model_name = model_name
+
+        # Initialize the appropriate LLM based on provider
+        if provider == ModelProvider.OPENAI:
+            self.llm = ChatOpenAI(model=model_name)
+        elif provider == ModelProvider.ANTHROPIC:
+            self.llm = ChatAnthropic(model=model_name)
+        else:
+            raise ValueError(f"Unsupported model provider: {provider}")
+
         self.output_parser = StrOutputParser()
-        self.chat_history = []  # Store the conversation history
+        self.chat_history = []
+        self.attempt_number = 1
+
+        # Create base directory structure
+        self.base_dir = Path(__file__).parent.resolve()
+        self.day_dir = self.base_dir / f"day{self.day}"
+        self.day_dir.mkdir(parents=True, exist_ok=True)
 
     def read_puzzle_description(self) -> str:
         """Read the puzzle description from the corresponding day's folder."""
-        current_dir = Path(__file__).parent
-        description_path = current_dir / f"day{self.day}/input/description_part{self.part}.txt"
+        description_path = self.day_dir / "input" / f"description_part{self.part}.txt"
 
         if not description_path.exists():
             raise FileNotFoundError(f"No description found for day {self.day} at {description_path}")
@@ -31,8 +69,7 @@ class AoCLLMSolver:
 
     def read_puzzle_input(self) -> str:
         """Read the puzzle input from the corresponding day's folder."""
-        current_dir = Path(__file__).parent
-        input_path = current_dir / f"day{self.day}/input/input.txt"
+        input_path = self.day_dir / "input" / "input.txt"
 
         if not input_path.exists():
             raise FileNotFoundError(f"No input found for day {self.day} at {input_path}")
@@ -40,15 +77,28 @@ class AoCLLMSolver:
         with open(input_path, "r") as f:
             return f.read()
 
+    def save_solution(self, solution: str) -> Path:
+        """Save the solution to a file with attempt number and return the path."""
+        # Include model info in filename for better tracking
+        model_suffix = f"_{self.provider.value}_{self.model_name.replace('-', '_')}"
+        solution_path = self.day_dir / f"solution_part{self.part}_try{self.attempt_number}{model_suffix}.py"
+
+        solution_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(solution_path, "w", encoding='utf-8') as f:
+            f.write(solution)
+            f.flush()
+            os.fsync(f.fileno())
+
+        return solution_path
+
     def generate_solution(self) -> str:
         """Generate a Python solution using the LLM."""
-        print("Reading puzzle description")
+        print(f"\nGenerating solution attempt #{self.attempt_number} using {self.provider.value} - {self.model_name}")
         description = self.read_puzzle_description()
-        print("Reading puzzle input")
         sample_input = self.read_puzzle_input()
 
-        print("Creating prompt")
-        escaped_sample_input = sample_input[:200].replace("{", "{{").replace("}", "}}")
+        escaped_sample_input = sample_input.replace("{", "{{").replace("}", "}}")
 
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are an expert Python programmer helping to solve Advent of Code puzzles.
@@ -58,8 +108,11 @@ class AoCLLMSolver:
             2. Include proper error handling
             3. Be efficient and follow Python best practices
             4. Include type hints where appropriate
-            5. Parse the input file correctly
+            5. Parse the input file correctly from 'input/input.txt' relative to the script's location
             6. Print the final answer
+
+            Important: The input file is located at 'input/input.txt' relative to the script.
+            Your solution should use this path to read the input file.
 
             Return only the Python code, no explanations before or after."""),
             ("user", f"""Here is the puzzle description:
@@ -68,59 +121,64 @@ class AoCLLMSolver:
             Here is a sample of the input format:
             {escaped_sample_input}  # Only show first 200 chars of input as example
 
-            You are currently solving Part {self.part}."""),
+            You are currently solving Part {self.part}. Remember to read the input from 'input/input.txt'."""),
             MessagesPlaceholder(variable_name="chat_history"),
             ("user", "Please generate a Python solution to solve this puzzle.")
         ])
 
         chain = prompt | self.llm | self.output_parser
-        print("Generating solution")
         return chain.invoke({"chat_history": self.chat_history})
 
-    def provide_feedback(self, solution_output: str, feedback: str) -> str:
+    def provide_feedback(self, solution: str, feedback: str) -> str:
         """Provide feedback about a solution attempt and get an improved version."""
-        # Add the previous solution attempt and feedback to chat history
         self.chat_history.extend([
-            AIMessage(content=f"Here was my previous solution attempt:\n```python\n{solution_output}\n```"),
+            AIMessage(content=f"Here was my solution attempt #{self.attempt_number}:\n```python\n{solution}\n```"),
             HumanMessage(
                 content=f"This solution didn't work. Here's what happened: {feedback}\nPlease provide an improved solution that addresses these issues.")
         ])
 
-        # Generate a new solution with the updated chat history
+        self.attempt_number += 1
         return self.generate_solution()
 
 
-def main(day: int, part: int):
-    solver = AoCLLMSolver(day=day, part=part)
+def main(day: int, part: int, provider: ModelProvider = ModelProvider.OPENAI, model_name: str = "gpt-4"):
+    solver = AoCLLMSolver(day=day, part=part, provider=provider, model_name=model_name)
 
     try:
-        # Initial solution attempt
-        solution = solver.generate_solution()
+        current_solution = solver.generate_solution()
+
         while True:
-            print("Generated Python Solution:")
+            print(f"\nGenerated Python Solution (Attempt #{solver.attempt_number}):")
             print("-" * 80)
-            print(solution)
+            print(current_solution)
             print("-" * 80)
 
-            current_dir = Path(__file__).parent
-            solution_path = current_dir / f"day{solver.day}/solution_part{solver.part}.py"
-            solution_path.parent.mkdir(parents=True, exist_ok=True)
-
-            with open(solution_path, "w") as f:
-                f.write(solution)
+            solution_path = solver.save_solution(current_solution)
             print(f"\nSolution saved to {solution_path}")
 
-            # Ask for feedback
-            feedback = input("\nDid this solution work? If not, please provide feedback (or 'exit' to quit): ")
+            print("\nPlease verify the solution has been saved and test it.")
+            feedback = input("Did this solution work? If not, please provide feedback (or 'exit' to quit): ")
+
             if feedback.lower() == 'exit' or feedback.lower() == 'yes':
                 break
 
-            # Generate improved solution based on feedback
-            solution = solver.provide_feedback(solution, feedback)
+            current_solution = solver.provide_feedback(current_solution, feedback)
 
     except Exception as e:
         print(f"Error: {e}")
 
 
 if __name__ == "__main__":
-    main(3, 2)
+    # Example usage with different models:
+
+    # For OpenAI GPT-4o
+    main(4, 2, ModelProvider.OPENAI, "gpt-4o")
+
+    # For OpenAI GPT-4 Turbo
+    # main(4, 2, ModelProvider.OPENAI, "gpt-4-turbo-preview")
+
+    # For Anthropic Claude 3 Sonnet
+    # main(4, 2, ModelProvider.ANTHROPIC, "claude-3-5-sonnet-latest")
+
+    # For Anthropic Claude 3 Opus
+    # main(4, 2, ModelProvider.ANTHROPIC, "claude-3-opus-20240229")
