@@ -91,3 +91,12 @@ I ended up implementing the solution myself (see human_takeover file). The LLM w
 
 I would have expected some prompt engineering to coerce it to a solution here, so that's why I made the note about improving debug verbosity as I'm not sure if the solver is not doing exactly as I expect.
 One to look into!
+
+### Day5
+Part 1 - solved first time with gpt-4o
+
+Part 2 - solved first time with gpt-4o
+
+Time taken = 15 secs overall
+
+Cost - 7 cents - I think now is the time to try how cheaper models fair for these coding tasks. 4o probably is overkill.

@@ -172,7 +172,7 @@ if __name__ == "__main__":
     # Example usage with different models:
 
     # For OpenAI GPT-4o
-    main(4, 2, ModelProvider.OPENAI, "gpt-4o")
+    main(5, 2, ModelProvider.OPENAI, "gpt-4o")
 
     # For OpenAI GPT-4 Turbo
     # main(4, 2, ModelProvider.OPENAI, "gpt-4-turbo-preview")
