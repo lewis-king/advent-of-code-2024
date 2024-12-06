@@ -100,3 +100,13 @@ Part 2 - solved first time with gpt-4o
 Time taken = 15 secs overall
 
 Cost - 7 cents - I think now is the time to try how cheaper models fair for these coding tasks. 4o probably is overkill.
+
+**NB: I've realised I'm doing things a bit inefficiently with creating two separate solution files for Part 1 and 2. Going forward I'll pass the working solution of part 1 to part 2's LLM prompt so that the solution is modified to cater for both, rather than building from scratch.**
+
+### Day6
+Part 1 - solved first time with gpt-4o
+
+Part 2 - solved first time with gpt-4o - however, I've updated the prompt to make the LLM produce answers for both part 1 and part 2 after modifying the solution for part 1. And it actually got part 1 wrong and part 2 right with this new solution.
+So I'll need to tweak this bit!!
+
+Cost - 7 cents - still need to use a slimmer model! But I'm just loving the quick decent results atm with 4o
