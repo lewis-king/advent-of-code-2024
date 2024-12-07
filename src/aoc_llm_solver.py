@@ -115,7 +115,7 @@ class AoCLLMSolver:
         description = self.read_puzzle_description()
         sample_input = self.read_puzzle_input()
 
-        escaped_sample_input = sample_input.replace("{", "{{").replace("}", "}}")
+        escaped_sample_input = sample_input[:1000].replace("{", "{{").replace("}", "}}")
 
         # Create system message that won't be affected by template variables
         system_message = """You are an expert Python programmer helping to solve Advent of Code puzzles.
@@ -149,7 +149,8 @@ class AoCLLMSolver:
             Here is a sample of the input format:
             {escaped_sample_input}
 
-            Please modify the Part 1 solution to solve Part 2. Maintain any useful helper functions and data structures and maintain the ability for the solution to produce the result for both parts.
+            Please modify the Part 1 solution to solve Part 2. 
+            Modify the solution you had for Part 1 to produce the result for both parts, ideally printing both parts.
             Remember to clearly indicate the Part 2 modifications in the comments."""))
         else:
             messages.append(("user", f"""Here is the puzzle description:
@@ -242,7 +243,7 @@ def solve_puzzle(
 if __name__ == "__main__":
     # Example usage with different models:
     base_dir = Path(__file__).parent.resolve()
-    day = 6
+    day = 7
     part = 2
     # Solve Part 1
     #solve_puzzle(day=day, part=part, provider=ModelProvider.OPENAI, model_name="gpt-4o")
@@ -253,5 +254,5 @@ if __name__ == "__main__":
          part=part,
          provider=ModelProvider.OPENAI,
          model_name="gpt-4o",
-         part1_solution_path=base_dir / "day6/solution_part1_try1_openai_gpt_4o.py"
+         part1_solution_path=base_dir / f"day{day}/solution_part1_try1_openai_gpt_4o.py"
     )
