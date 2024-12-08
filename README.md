@@ -110,3 +110,17 @@ Part 2 - solved first time with gpt-4o - however, I've updated the prompt to mak
 So I'll need to tweak this bit!!
 
 Cost - 7 cents - still need to use a slimmer model! But I'm just loving the quick decent results atm with 4o
+
+### Day7
+Part 1 - solved first time with gpt-4o
+
+Part 2 - solved first time with gpt-4o
+
+### Day8
+Part 1 - gpt-4o is struggling with this one.
+I tweaked the prompt to allow extra spacing between the sample inputs so that the description text or prompt text did not mess with the solution.
+And after a retry this worked first time!
+
+Part 2 - Solved first time
+
+Moral of this one - take extra care when formatting the information required for the LLM to do its job. We pass in a sequence of text, and if that sequence contains different sources/information types you should try to ensure they are separated. This was particularly important for the LLM to understand the sample inputs scope.
