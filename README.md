@@ -124,3 +124,9 @@ And after a retry this worked first time!
 Part 2 - Solved first time
 
 Moral of this one - take extra care when formatting the information required for the LLM to do its job. We pass in a sequence of text, and if that sequence contains different sources/information types you should try to ensure they are separated. This was particularly important for the LLM to understand the sample inputs scope.
+
+### Day9
+LLM really struggling here, looks like it's close to a solution but I need to human debug a bit to understand where it's failing... TBD
+
+### Day10
+Part 1 & 2 solved first time
