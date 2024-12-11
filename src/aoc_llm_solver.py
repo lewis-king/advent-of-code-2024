@@ -245,7 +245,7 @@ def solve_puzzle(
 if __name__ == "__main__":
     # Example usage with different models:
     base_dir = Path(__file__).parent.resolve()
-    day = 10
+    day = 11
     part = 2
     # Solve Part 1
     #solve_puzzle(day=day, part=part, provider=ModelProvider.OPENAI, model_name="gpt-4o")

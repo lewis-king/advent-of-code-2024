@@ -130,3 +130,19 @@ LLM really struggling here, looks like it's close to a solution but I need to hu
 
 ### Day10
 Part 1 & 2 solved first time
+
+### Day11
+Part 1 solved first time
+
+Part 2 was taking a while to compute the answer, so I added this prompt:
+```
+Did this solution work? If not, please provide feedback (or 'exit' to quit): hmm, I think I need to make the solution more performant as it's taking a while to complete part2
+```
+
+The LLM then gave another solution which completed instantly, getting correct answers for both part 1 and 2.
+
+It does a great job explaining what it improved too:
+```python
+# **Optimization with `Counter`:** Instead of maintaining a list of stones, which can become very large, we use a `Counter` from Python's `collections` module to keep track of the number of each type of stone. This allows us to efficiently handle large numbers of stones.
+# **Efficiency:** By tracking counts of stone types, we reduce the amount of data we need to process at each step, which significantly improves performance for a large number of blinks.
+```
